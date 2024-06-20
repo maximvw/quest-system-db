@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from storage.postgres.config import host, port, user, password, db_name
+from storage.postgres.config import port, user, password, db_name
 
 URL_DATABASE = f"postgresql://{user}:{password}@localhost:{port}/{db_name}"
 

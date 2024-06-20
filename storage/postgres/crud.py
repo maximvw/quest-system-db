@@ -1,7 +1,8 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from storage import models, schemas
+from storage import models
+from server import schemas
 
 
 def get_quest_by_id(quest_id: int, db: Session):
@@ -35,7 +36,7 @@ def publish_quest(quest: schemas.Quest, db: Session):
     db.add(db_quest)
     db.commit()
     db.refresh(db_quest)
-    return db_quest.id
+    return schemas.QuestId(quest_id=db_quest.id)
 
 
 def change_quest(title: str, quest_id: int, new_quest: schemas.ChangesForQuest, db: Session):
