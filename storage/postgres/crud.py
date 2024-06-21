@@ -1,8 +1,10 @@
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from storage import models
+import internal
 from server import schemas
+from storage import models
 
 
 def get_quest_by_id(quest_id: int, db: Session):
@@ -31,15 +33,24 @@ def get_all_quests(db: Session):
 
 
 def publish_quest(quest: schemas.Quest, db: Session):
-    db_quest = models.Quests_DB(employer=quest.employer, title=quest.title,
-                                description=quest.description, award=quest.award)
-    db.add(db_quest)
-    db.commit()
-    db.refresh(db_quest)
+    if quest.award < 0:
+        raise KeyError("award must be positive number")
+    try:
+        db_quest = models.Quests_DB(employer=quest.employer, title=quest.title,
+                                    description=quest.description, award=quest.award)
+
+        db.add(db_quest)
+        db.commit()
+        db.refresh(db_quest)
+    except IntegrityError as exc:
+        raise KeyError(internal.tools.parse_integrity_exc_msg(exc.orig.args[0]))
     return schemas.QuestId(quest_id=db_quest.id)
 
 
 def change_quest(title: str, quest_id: int, new_quest: schemas.ChangesForQuest, db: Session):
+    if new_quest.award < 0:
+        raise KeyError("new award must be positive number")
+
     quest = db.query(models.Quests_DB).filter(and_(models.Quests_DB.title == title,
                                                    models.Quests_DB.id == quest_id)).first()
     if not quest:

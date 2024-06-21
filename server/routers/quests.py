@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
 from http import HTTPStatus
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from typing import List
 
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from server import schemas
 from storage import models
 from storage.postgres import crud
-from server import schemas
 from storage.postgres.postrgres import engine, SessionLocal
-from internal import tools
 
 router = APIRouter()
 
@@ -22,6 +21,7 @@ def get_db():
     finally:
         db.close()
 
+
 @router.get("/quests/get_quest_by_id/{quest_id}", response_model=schemas.Quest)
 def show_quest_by_id(quest_id: int, db: Session = Depends(get_db)):
     try:
@@ -31,6 +31,7 @@ def show_quest_by_id(quest_id: int, db: Session = Depends(get_db)):
             status_code=HTTPStatus.BAD_REQUEST,
             detail=exc.args[0]
         )
+
 
 @router.get("/quests/show_by_employer/{employer}", response_model=List[schemas.Quest])
 def show_quests_by_employer(employer: str, db: Session = Depends(get_db)):
@@ -63,10 +64,10 @@ def show_all_quests(db: Session = Depends(get_db)):
 def publish_quest(quest: schemas.Quest, db: Session = Depends(get_db)):
     try:
         return crud.publish_quest(quest, db)
-    except IntegrityError as exc:
+    except KeyError as exc:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail=tools.parse_integrity_exc_msg(exc.orig.args[0])
+            detail=exc.args[0]
         )
 
 
@@ -90,4 +91,3 @@ def remove_quest(title: str, quest_id: int, db: Session = Depends(get_db)):
             status_code=HTTPStatus.BAD_REQUEST,
             detail=exc.args[0]
         )
-

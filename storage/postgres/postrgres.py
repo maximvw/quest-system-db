@@ -2,13 +2,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from storage.postgres.config import port, user, password, db_name
+from server.schemas import PgConfig
 
-URL_DATABASE = f"postgresql://{user}:{password}@localhost:{port}/{db_name}"
+pg_config = PgConfig()
+
+URL_DATABASE = f"postgresql://{pg_config.user}:{pg_config.password}@localhost:{pg_config.port}/{pg_config.db_name}"
 
 engine = create_engine(URL_DATABASE)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-

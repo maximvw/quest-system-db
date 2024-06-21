@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 
 
 class Quest(BaseModel):
@@ -12,11 +13,14 @@ class QuestId(BaseModel):
     quest_id: int
 
 
-class QuestIdsList(BaseModel):
-    quest_ids: list
-
-
 class ChangesForQuest(BaseModel):
     employer: str
     description: str
     award: float
+
+
+class PgConfig(BaseSettings):
+    port: str = "5432"
+    user: str = "postgres"
+    password: str = "1234"
+    db_name: str = "stalker-quests"

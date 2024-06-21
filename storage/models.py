@@ -1,5 +1,7 @@
 from sqlalchemy import CheckConstraint, Column, Float, Integer, String
+
 from storage.postgres.postrgres import Base
+
 
 class Quests_DB(Base):
     __tablename__ = "quests"
@@ -13,5 +15,3 @@ class Quests_DB(Base):
     __table_args__ = (
         CheckConstraint(award >= 0, name="check_award_positive"),
         {})
-
-
