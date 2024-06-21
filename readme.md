@@ -1,1 +1,1 @@
-# This repository contains source code for quest system microservice
+# This repository contains source code of quest system microservice
