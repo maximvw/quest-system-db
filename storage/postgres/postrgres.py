@@ -2,11 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from storage.postgres.config import PgConfig
+from storage.postgres.config import pg_config
 
-pg_config = PgConfig()
 
-URL_DATABASE = f"postgresql://{pg_config.user}:{pg_config.password}@localhost:{pg_config.port}/{pg_config.db_name}"
+
+URL_DATABASE = pg_config.get_url()
 
 engine = create_engine(URL_DATABASE)
 
