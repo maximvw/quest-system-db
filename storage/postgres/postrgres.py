@@ -4,9 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from storage.postgres.config import pg_config
 
-URL_DATABASE = pg_config.get_url()
-
-engine = create_engine(URL_DATABASE)
+engine = create_engine(pg_config.get_url())
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
